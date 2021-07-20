@@ -1,0 +1,82 @@
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+}
+
+html {
+  box-sizing: border-box;
+  font-size: 87.5%; /* 14px/16px = 87.5% -> 1rem = 10px */
+}
+
+body {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  color: #54483a;
+  font-weight: 300;
+  line-height: 1.6;
+}
+
+#inputTodo {
+}
+
+.header {
+  max-width: 40vw;
+  margin: 1rem 0 1rem 0;
+}
+.mainContainer {
+  width: 40vw;
+  display: flex;
+  flex-direction: column;
+  max-height: 100vh;
+  padding-top: 1rem;
+  /* margin-left: auto; */
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  justify-items: center;
+  padding-top: 1.5rem;
+  /* border: 1px solid red; */
+}
+
+.list-item {
+  border: 1px solid blue;
+  margin-top: 0.3rem;
+  display: flex;
+  width: 100%;
+  align-items: center;
+}
+
+.list-item-text {
+  color: rebeccapurple;
+  font-size: 1.2rem;
+  margin: 1rem;
+}
+
+.list-item-icon {
+  margin-right: 1rem;
+}
+
+.list-item-check {
+  height: 2rem;
+  width: 2rem;
+  margin-left: auto;
+  margin-right: 1rem;
+  justify-self: end;
+}
+
+.header {
+  height: 10rem;
+}
+@media only screen and (max-width: 1400px) {
+  .mainContainer {
+    width: 60vw;
+  }
+  .header {
+    width: 60vw;
+  }
+}
