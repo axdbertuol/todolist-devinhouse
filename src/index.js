@@ -99,7 +99,7 @@ const createListItem = (key, value, checked) => {
   listItemRemove.addEventListener("click", (e) => {
     const shouldRemove = window.confirm("Deseja mesmo remover a tarefa?");
     if (shouldRemove) {
-      // find position ro remove
+      // find position to remove
       let position = localStorageItens.findIndex(
         (item) => item.id === e.target.parentElement.id
       );
