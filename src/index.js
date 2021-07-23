@@ -4,96 +4,136 @@ const inputField = document.getElementById("inputTodo");
 let numOfListItems = 0;
 let localStorageItens = [];
 
-const createListItem = (key, value) => {
+const createListItem = (key, value, checked) => {
   if (!value) {
     window.alert("Insira algo!");
     return;
-  }
-  if (!key) {
   }
   if (lista.className.search("d-none")) {
     lista.className = "list";
   }
 
   numOfListItems++;
-
   // Parent List
   const listItem = document.createElement("div");
   listItem.className = "list-item";
-  listItem.id = "list-item-" + numOfListItems;
+  listItem.id = key ? key : "list-item-" + numOfListItems;
   lista.appendChild(listItem);
 
-  // Save to localStorage
-  // console.log("salvendo key", listItem.id);
-  // console.log("salvendo value", value);
-  localStorage.setItem(listItem.id, value);
+  // Push to array
+  localStorageItens.push({
+    id: listItem.id,
+    value: value,
+    checked: checked || false,
+  });
+
+  // Check button
+  const listItemCheck = document.createElement("input");
+  listItemCheck.type = "checkbox";
+  listItemCheck.className = "form-check-input list-item-check";
+  listItem.appendChild(listItemCheck);
+
+  // Procura index do item referido
+  let itemIndex = localStorageItens.findIndex(
+    (item) => item.id === listItem.id
+  );
+
+  listItemCheck.addEventListener("click", (e) => {
+    checkItem(e.target.checked);
+    if (e.target.checked) {
+      // Save to array
+      localStorageItens[itemIndex] = {
+        ...localStorageItens[itemIndex],
+        checked: true,
+      };
+    } else {
+      // Remove item from array
+      localStorageItens[itemIndex] = {
+        ...localStorageItens[itemIndex],
+        checked: false,
+      };
+    }
+
+    // Save to localStorage
+    localStorage.setItem(
+      listItem.id,
+      JSON.stringify(localStorageItens[itemIndex])
+    );
+  });
 
   // Texto Lista
   const listItemText = document.createElement("p");
   listItemText.className = "list-item-text";
   listItemText.innerText = value;
   listItemText.value = value;
-  listItem.appendChild(listItemText);
+  listItemCheck.after(listItemText);
 
-  // after listItemText
-  // Check button
-  const listItemCheck = document.createElement("input");
-  listItemCheck.type = "checkbox";
-  listItemCheck.className = "form-check-input list-item-check";
-  listItemCheck.id = "list-item-check-" + numOfListItems;
-  listItemCheck.addEventListener("click", (e) => {
-    if (e.target.checked) {
+  // Save to localStorage
+  localStorage.setItem(
+    listItem.id,
+    JSON.stringify(localStorageItens[itemIndex])
+  );
+
+  const checkItem = (checked) => {
+    if (checked) {
       listItemText.style = "text-decoration: line-through";
-      return;
+      listItem.style = "background-color: #606c38;";
+      listItemCheck.checked = true;
+    } else {
+      listItemText.style = "text-decoration: none";
+      listItem.style = "background-color: #f4a261;";
+      listItemCheck.checked = false;
     }
-    listItemText.style = "text-decoration: none";
-  });
-  listItemText.after(listItemCheck);
+  };
 
-  // Remove button
+  // Check item if checked was passed in as arg
+  checkItem(checked);
+
+  // AFTER listItemText
+
+  // Close button
   const listItemRemove = document.createElement("button");
   listItemRemove.type = "button";
   listItemRemove.className = "btn-close list-item-icon";
 
   listItemRemove.addEventListener("click", (e) => {
-    console.log(e.target.parentElement.id);
-    //TODO: prompt delete or no
-    localStorage.removeItem(e.target.parentElement.id);
-    const elementToDelete = document.getElementById(e.target.parentElement.id);
-    numOfListItems--;
-    elementToDelete.remove();
+    const shouldRemove = window.confirm("Deseja mesmo remover a tarefa?");
+    if (shouldRemove) {
+      // find position ro remove
+      let position = localStorageItens.findIndex(
+        (item) => item.id === e.target.parentElement.id
+      );
+      localStorageItens.splice(position, 1);
+      localStorage.removeItem(e.target.parentElement.id);
+      const elementToDelete = document.getElementById(
+        e.target.parentElement.id
+      );
+      numOfListItems--;
+      elementToDelete.remove();
+    }
   });
 
-  listItemCheck.after(listItemRemove);
+  listItemText.after(listItemRemove);
 
   return;
 };
 
 const createListFromLocalStorage = () => {
   if (localStorage.length > 0) {
-    for (let index = 0; index < localStorage.length; index++) {
+    numOfListItems = localStorageItens.length;
+    for (let index = localStorage.length - 1; index >= 0; index--) {
       const key = localStorage.key(index);
-      console.log("key", key);
-      console.log("localStorage.getItem(key)", localStorage.getItem(key));
-      createListItem(key, localStorage.getItem(key));
+      const obj = JSON.parse(localStorage.getItem(key));
+      createListItem(key, obj.value, obj.checked);
     }
   }
 };
 
 const onSubmit = () => {
-  createListItem("", inputField.value);
+  createListItem("", inputField.value, false);
   // clear inputField
   inputField.value = "";
   inputField.focus();
-};
-
-const getLocalStorageItems = () => {
-  if (localStorage.length > 0) {
-    for (let index = 0; index < localStorage.length; index++) {
-      const key = localStorage.key(index);
-      // localStorageItens.push({ text: localStorage.getItem(key) });
-    }
-  }
 };
 
 createListFromLocalStorage();

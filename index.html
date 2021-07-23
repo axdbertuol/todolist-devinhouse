@@ -12,30 +12,36 @@
     />
     <link rel="stylesheet" href="css/style.css" />
 
-    <title>TODO Lists</title>
+    <title>Lista de Tarefas</title>
   </head>
   <body>
     <div class="container mainContainer">
       <!-- header -->
-      <header class="header">
-        <div class="w-100 h-100 p-3" style="background-color: #eee">
-          Cabeçalho
-        </div>
+      <header class="header p-3">
+        <h1 class="display-1 cabecalho">Lista de Tarefas</h1>
       </header>
+      <hr />
       <!-- SEND box -->
       <div class="row g-3">
-        <div class="col">
-          <input type="text" id="inputTodo" class="form-control" value="" />
-        </div>
-        <div class="col-12">
+        <div class="col d-flex">
+          <input
+            type="text"
+            id="inputTodo"
+            class="form-control mr-10"
+            value=""
+            placeholder="Insira uma tarefa aqui!"
+            maxlength="50"
+          />
           <input
             type="submit"
-            class="btn btn-primary btn-lg w-100"
+            class="btn btn-lg"
             id="submitButton"
+            value="+"
             onclick="onSubmit()"
           />
         </div>
         <!-- LISTA -->
+
         <div class="list d-none"></div>
       </div>
     </div>
