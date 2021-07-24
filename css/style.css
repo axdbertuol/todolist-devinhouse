@@ -61,6 +61,7 @@ body {
   width: 100%;
   align-items: center;
   background-color: #f4a261;
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.2);
 }
 
 .list-item-text {

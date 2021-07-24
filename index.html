@@ -40,19 +40,28 @@
             onclick="onSubmit()"
           />
         </div>
-        <!-- LISTA -->
-
-        <div class="list d-none"></div>
-
         <!-- CLEAN BUTTONS -->
         <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-          <button id="cleanAllBtn" type="reset" class="d-none" disabled>
+          <button
+            id="cleanAllBtn"
+            type="reset"
+            onclick="onClickCleanAll()"
+            class="d-none"
+          >
             Limpar Todos
           </button>
-          <button id="cleanDoneBtn" type="reset" class="d-none" disabled>
+          <button
+            id="cleanDoneBtn"
+            type="reset"
+            onclick="onClickCleanDone()"
+            class="d-none"
+          >
             Limpar Concluídos
           </button>
         </div>
+        <!-- LISTA -->
+
+        <div class="list d-none"></div>
       </div>
     </div>
 
