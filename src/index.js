@@ -154,9 +154,7 @@ const onClickCleanAll = () => {
     const listItemOrder = JSON.parse(localStorage.getItem("order"));
 
     for (let index = 0; index < listItemOrder.length; index++) {
-      console.log("oi", index);
       const key = listItemOrder[index];
-      console.log("keyToDelete", key);
       removeListItem(key);
     }
     // update order
