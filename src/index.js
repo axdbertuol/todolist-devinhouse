@@ -3,8 +3,10 @@ const inputField = document.getElementById("inputTodo");
 const cleanAllBtn = document.getElementById("cleanAllBtn");
 const cleanDoneBtn = document.getElementById("cleanDoneBtn");
 
-let numOfListItemsCreated = localStorage.length;
-
+let numOfListItemsCreated = 0;
+if (!localStorage.getItem("order")) {
+  localStorage.setItem("order", "[]");
+}
 // UTILS FUNCTIONS
 const shouldHideElements = () => {
   if (lista.children.length === 0) {
@@ -18,6 +20,11 @@ const removeListItem = (id) => {
   const elementToDelete = document.getElementById(id);
   elementToDelete.remove();
   localStorage.removeItem(id);
+  // update order
+  const listItemOrder = JSON.parse(localStorage.getItem("order"));
+  const indexToDelete = listItemOrder.findIndex((idOrder) => idOrder === id);
+  listItemOrder.splice(indexToDelete, 1);
+  localStorage.setItem("order", JSON.stringify(listItemOrder));
 };
 
 // Creation functions
@@ -90,7 +97,7 @@ const createListItem = (key, value, checked) => {
     }
   };
 
-  // Check item
+  // Check item html
   checkItem(checked);
 
   // AFTER listItemText
@@ -104,19 +111,22 @@ const createListItem = (key, value, checked) => {
     const shouldRemove = window.confirm("Deseja mesmo remover a tarefa?");
     if (shouldRemove) {
       removeListItem(e.target.parentElement.id);
+
       shouldHideElements();
     }
   });
 
   listItemText.after(listItemRemove);
 
-  return;
+  return listItem.id;
 };
 
 const createListFromLocalStorage = () => {
-  if (localStorage.length > 0) {
-    for (let index = localStorage.length - 1; index >= 0; index--) {
-      const key = localStorage.key(index);
+  if (localStorage.length > 1 && localStorage.getItem("order")) {
+    const listItemOrder = JSON.parse(localStorage.getItem("order"));
+    console.log(listItemOrder);
+    for (let index = 0; index < listItemOrder.length; index++) {
+      const key = listItemOrder[index];
       const obj = JSON.parse(localStorage.getItem(key));
       createListItem(key, obj.value, obj.checked);
     }
@@ -125,7 +135,13 @@ const createListFromLocalStorage = () => {
 
 // EVENTS FUNCTIONS
 const onSubmit = () => {
-  createListItem("", inputField.value, false);
+  const listItemId = createListItem("", inputField.value, false);
+
+  // update order
+  const listItemOrder = JSON.parse(localStorage.getItem("order"));
+  listItemOrder.push(listItemId);
+  localStorage.setItem("order", JSON.stringify(listItemOrder));
+
   // clear inputField
   inputField.value = "";
   inputField.focus();
@@ -135,12 +151,18 @@ const onClickCleanAll = () => {
   const shouldRemove = window.confirm("Deseja mesmo remover TODAS as tarefas?");
 
   if (shouldRemove) {
-    for (let index = localStorage.length - 1; index >= 0; index--) {
-      const key = localStorage.key(index);
+    // debugger;
+    const listItemOrder = JSON.parse(localStorage.getItem("order"));
+
+    for (let index = 0; index < listItemOrder.length; index++) {
+      console.log("oi", index);
+      const key = listItemOrder[index];
+      console.log("keyToDelete", key);
       removeListItem(key);
     }
+    // update order
+    localStorage.setItem("order", "[]");
     shouldHideElements();
-    localStorage.clear();
   }
 };
 
@@ -150,8 +172,10 @@ const onClickCleanDone = () => {
   );
 
   if (shouldRemove) {
-    for (let index = localStorage.length - 1; index >= 0; index--) {
-      const key = localStorage.key(index);
+    const listItemOrder = JSON.parse(localStorage.getItem("order"));
+
+    for (let index = 0; index < listItemOrder.length; index++) {
+      const key = listItemOrder[index];
       const obj = JSON.parse(localStorage.getItem(key));
       if (obj.checked === true) {
         removeListItem(key);
