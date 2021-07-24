@@ -43,6 +43,7 @@ body {
   padding: 3rem 2.5rem;
   border-radius: 15px;
   background-color: #e9c46a;
+  box-shadow: 0 1rem 4rem rgba(0, 0, 0, 0.6);
 }
 
 .list {

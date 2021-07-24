@@ -1,5 +1,8 @@
 const lista = document.querySelector(".list");
 const inputField = document.getElementById("inputTodo");
+const cleanAllBtn = document.getElementById("cleanAllBtn");
+const cleanDoneBtn = document.getElementById("cleanDoneBtn");
+
 // TODO: check array length localstorage
 let numOfListItems = 0;
 let localStorageItens = [];
@@ -114,6 +117,11 @@ const createListItem = (key, value, checked) => {
   });
 
   listItemText.after(listItemRemove);
+
+  // CLEAN BUTTONS
+
+  cleanAllBtn.className = "btn btn-dark";
+  cleanDoneBtn.className = "btn btn-dark";
 
   return;
 };
