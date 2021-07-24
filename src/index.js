@@ -124,7 +124,6 @@ const createListItem = (key, value, checked) => {
 const createListFromLocalStorage = () => {
   if (localStorage.length > 1 && localStorage.getItem("order")) {
     const listItemOrder = JSON.parse(localStorage.getItem("order"));
-    console.log(listItemOrder);
     for (let index = 0; index < listItemOrder.length; index++) {
       const key = listItemOrder[index];
       const obj = JSON.parse(localStorage.getItem(key));
