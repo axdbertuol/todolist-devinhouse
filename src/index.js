@@ -5,6 +5,7 @@ const cleanDoneBtn = document.getElementById("cleanDoneBtn");
 
 let numOfListItemsCreated = localStorage.length;
 
+// UTILS FUNCTIONS
 const shouldHideElements = () => {
   if (lista.children.length === 0) {
     lista.className = "d-none";
@@ -13,6 +14,13 @@ const shouldHideElements = () => {
   }
 };
 
+const removeListItem = (id) => {
+  const elementToDelete = document.getElementById(id);
+  elementToDelete.remove();
+  localStorage.removeItem(id);
+};
+
+// Creation functions
 const createListItem = (key, value, checked) => {
   if (!value) {
     window.alert("Insira algo!");
@@ -24,10 +32,10 @@ const createListItem = (key, value, checked) => {
   cleanAllBtn.className = "btn btn-dark";
   cleanDoneBtn.className = "btn btn-dark";
 
-  numOfListItemsCreated++;
   // Parent List
   const listItem = document.createElement("div");
   listItem.className = "list-item";
+  numOfListItemsCreated++;
   // if key is empty, make one
   listItem.id = key ? key : "list-item-" + numOfListItemsCreated;
   lista.appendChild(listItem);
@@ -60,7 +68,7 @@ const createListItem = (key, value, checked) => {
     }
   });
 
-  // Texto Lista
+  // Item-Texto Lista
   const listItemText = document.createElement("p");
   listItemText.className = "list-item-text";
   listItemText.innerText = value;
@@ -87,7 +95,7 @@ const createListItem = (key, value, checked) => {
 
   // AFTER listItemText
 
-  // Close button
+  // Close/Remove button
   const listItemRemove = document.createElement("button");
   listItemRemove.type = "button";
   listItemRemove.className = "btn-close list-item-icon";
@@ -95,11 +103,7 @@ const createListItem = (key, value, checked) => {
   listItemRemove.addEventListener("click", (e) => {
     const shouldRemove = window.confirm("Deseja mesmo remover a tarefa?");
     if (shouldRemove) {
-      localStorage.removeItem(e.target.parentElement.id);
-      const elementToDelete = document.getElementById(
-        e.target.parentElement.id
-      );
-      elementToDelete.remove();
+      removeListItem(e.target.parentElement.id);
       shouldHideElements();
     }
   });
@@ -119,6 +123,7 @@ const createListFromLocalStorage = () => {
   }
 };
 
+// EVENTS FUNCTIONS
 const onSubmit = () => {
   createListItem("", inputField.value, false);
   // clear inputField
@@ -132,8 +137,7 @@ const onClickCleanAll = () => {
   if (shouldRemove) {
     for (let index = localStorage.length - 1; index >= 0; index--) {
       const key = localStorage.key(index);
-      const elementToDelete = document.getElementById(key);
-      elementToDelete.remove();
+      removeListItem(key);
     }
     shouldHideElements();
     localStorage.clear();
@@ -150,9 +154,7 @@ const onClickCleanDone = () => {
       const key = localStorage.key(index);
       const obj = JSON.parse(localStorage.getItem(key));
       if (obj.checked === true) {
-        const elementToDelete = document.getElementById(key);
-        elementToDelete.remove();
-        localStorage.removeItem(key);
+        removeListItem(key);
       }
     }
     shouldHideElements();
