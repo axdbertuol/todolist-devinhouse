@@ -3,7 +3,11 @@ const inputField = document.getElementById("inputTodo");
 const cleanAllBtn = document.getElementById("cleanAllBtn");
 const cleanDoneBtn = document.getElementById("cleanDoneBtn");
 
+// Um número para criar ids únicas
 let numOfListItemsCreated = 0;
+
+// Criei esta variável contendo a ordem original que os itens da lista aparecem
+// pois notei que às vezes o localStorage não guardava a ordem certa.
 if (!localStorage.getItem("order")) {
   localStorage.setItem("order", "[]");
 }
@@ -99,8 +103,6 @@ const createListItem = (key, value, checked) => {
 
   // Check item html
   checkItem(checked);
-
-  // AFTER listItemText
 
   // Close/Remove button
   const listItemRemove = document.createElement("button");
