@@ -1,17 +1,17 @@
+// VARIABLES
 const lista = document.querySelector(".list");
 const inputField = document.getElementById("inputTodo");
 const cleanAllBtn = document.getElementById("cleanAllBtn");
 const cleanDoneBtn = document.getElementById("cleanDoneBtn");
-
 // Um número para criar ids únicas
 let numOfListItemsCreated = 0;
+// Array para guardar itens da lista
+let itensLocalStorage = [];
 
-// Criei esta variável contendo a ordem original que os itens da lista aparecem
-// pois notei que às vezes o localStorage não guardava a ordem certa.
-if (!localStorage.getItem("order")) {
-  localStorage.setItem("order", "[]");
-}
 // UTILS FUNCTIONS
+const saveToLocalStorage = function () {
+  localStorage.setItem("listaDeTarefas", JSON.stringify(itensLocalStorage));
+};
 const shouldHideElements = () => {
   if (lista.children.length === 0) {
     lista.className = "d-none";
@@ -23,12 +23,8 @@ const shouldHideElements = () => {
 const removeListItem = (id) => {
   const elementToDelete = document.getElementById(id);
   elementToDelete.remove();
-  localStorage.removeItem(id);
-  // update order
-  const listItemOrder = JSON.parse(localStorage.getItem("order"));
-  const indexToDelete = listItemOrder.findIndex((idOrder) => idOrder === id);
-  listItemOrder.splice(indexToDelete, 1);
-  localStorage.setItem("order", JSON.stringify(listItemOrder));
+  const indexItem = itensLocalStorage.findIndex((item) => item.id === id);
+  itensLocalStorage.splice(indexItem, 1);
 };
 
 // Creation functions
@@ -51,11 +47,13 @@ const createListItem = (key, value, checked) => {
   listItem.id = key ? key : "list-item-" + numOfListItemsCreated;
   lista.appendChild(listItem);
 
-  // create new list item object
+  // create new list item object then push to array
   const newListItem = {
+    id: listItem.id,
     value: value,
     checked: checked,
   };
+  itensLocalStorage.push(newListItem);
 
   // Check button
   const listItemCheck = document.createElement("input");
@@ -63,21 +61,24 @@ const createListItem = (key, value, checked) => {
   listItemCheck.className = "form-check-input list-item-check";
   listItem.appendChild(listItemCheck);
 
-  listItemCheck.addEventListener("click", (e) => {
-    checkItem(e.target.checked);
-    if (e.target.checked) {
-      // Save to localStorage
-      localStorage.setItem(
-        listItem.id,
-        JSON.stringify({ ...newListItem, checked: true })
-      );
+  // Check functionality
+  const checkItem = (e) => {
+    const indexItem = itensLocalStorage.findIndex(
+      (item) => item.id === listItem.id
+    );
+    if (e.targetchecked) {
+      listItemText.style = "text-decoration: line-through";
+      listItem.style = "background-color: #606c38;";
+      listItemCheck.checked = true;
+      itensLocalStorage[indexItem].checked = true;
     } else {
-      localStorage.setItem(
-        listItem.id,
-        JSON.stringify({ ...newListItem, checked: false })
-      );
+      listItemText.style = "text-decoration: none";
+      listItem.style = "background-color: #f4a261;";
+      listItemCheck.checked = false;
+      itensLocalStorage[indexItem].checked = true;
     }
-  });
+  };
+  listItemCheck.addEventListener("click", checkItem);
 
   // Item-Texto Lista
   const listItemText = document.createElement("p");
@@ -85,24 +86,6 @@ const createListItem = (key, value, checked) => {
   listItemText.innerText = value;
   listItemText.value = value;
   listItemCheck.after(listItemText);
-
-  // Save to localStorage
-  localStorage.setItem(listItem.id, JSON.stringify(newListItem));
-
-  const checkItem = (checked) => {
-    if (checked) {
-      listItemText.style = "text-decoration: line-through";
-      listItem.style = "background-color: #606c38;";
-      listItemCheck.checked = true;
-    } else {
-      listItemText.style = "text-decoration: none";
-      listItem.style = "background-color: #f4a261;";
-      listItemCheck.checked = false;
-    }
-  };
-
-  // Check item html
-  checkItem(checked);
 
   // Close/Remove button
   const listItemRemove = document.createElement("button");
@@ -113,35 +96,30 @@ const createListItem = (key, value, checked) => {
     const shouldRemove = window.confirm("Deseja mesmo remover a tarefa?");
     if (shouldRemove) {
       removeListItem(e.target.parentElement.id);
-
       shouldHideElements();
     }
   });
 
   listItemText.after(listItemRemove);
 
-  return listItem.id;
+  return;
 };
 
 const createListFromLocalStorage = () => {
-  if (localStorage.length > 1 && localStorage.getItem("order")) {
-    const listItemOrder = JSON.parse(localStorage.getItem("order"));
-    for (let index = 0; index < listItemOrder.length; index++) {
-      const key = listItemOrder[index];
-      const obj = JSON.parse(localStorage.getItem(key));
-      createListItem(key, obj.value, obj.checked);
+  if (localStorage.length > 0) {
+    const listOfItems = JSON.parse(localStorage.getItem("listaDeTarefas"));
+    for (let index = 0; index < listOfItems.length; index++) {
+      const id = listOfItems[index].id;
+      const value = listOfItems[index].value;
+      const checked = listOfItems[index].checked;
+      createListItem(id, value, checked);
     }
   }
 };
 
 // EVENTS FUNCTIONS
 const onSubmit = () => {
-  const listItemId = createListItem("", inputField.value, false);
-
-  // update order
-  const listItemOrder = JSON.parse(localStorage.getItem("order"));
-  listItemOrder.push(listItemId);
-  localStorage.setItem("order", JSON.stringify(listItemOrder));
+  createListItem("", inputField.value, false);
 
   // clear inputField
   inputField.value = "";
@@ -152,15 +130,12 @@ const onClickCleanAll = () => {
   const shouldRemove = window.confirm("Deseja mesmo remover TODAS as tarefas?");
 
   if (shouldRemove) {
-    // debugger;
-    const listItemOrder = JSON.parse(localStorage.getItem("order"));
-
-    for (let index = 0; index < listItemOrder.length; index++) {
-      const key = listItemOrder[index];
+    //Clone array
+    const stub = [...itensLocalStorage];
+    for (let index = 0; index < stub.length; index++) {
+      const key = stub[index].id;
       removeListItem(key);
     }
-    // update order
-    localStorage.setItem("order", "[]");
     shouldHideElements();
   }
 };
@@ -171,17 +146,21 @@ const onClickCleanDone = () => {
   );
 
   if (shouldRemove) {
-    const listItemOrder = JSON.parse(localStorage.getItem("order"));
-
-    for (let index = 0; index < listItemOrder.length; index++) {
-      const key = listItemOrder[index];
-      const obj = JSON.parse(localStorage.getItem(key));
-      if (obj.checked === true) {
+    //Clone array
+    const stub = [...itensLocalStorage];
+    for (let index = 0; index < stub.length; index++) {
+      const key = stub[index].id;
+      const checked = stub[index].checked;
+      if (checked) {
         removeListItem(key);
       }
     }
     shouldHideElements();
   }
 };
+
+// Add unload event
+window.addEventListener("unload", saveToLocalStorage);
+window.unload = saveToLocalStorage;
 
 createListFromLocalStorage();
