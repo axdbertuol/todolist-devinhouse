@@ -66,7 +66,7 @@ const createListItem = (key, value, checked) => {
     const indexItem = itensLocalStorage.findIndex(
       (item) => item.id === listItem.id
     );
-    if (e.targetchecked) {
+    if (e.target.checked) {
       listItemText.style = "text-decoration: line-through";
       listItem.style = "background-color: #606c38;";
       listItemCheck.checked = true;
@@ -75,11 +75,11 @@ const createListItem = (key, value, checked) => {
       listItemText.style = "text-decoration: none";
       listItem.style = "background-color: #f4a261;";
       listItemCheck.checked = false;
-      itensLocalStorage[indexItem].checked = true;
+      itensLocalStorage[indexItem].checked = false;
     }
   };
   listItemCheck.addEventListener("click", checkItem);
-
+  listItemCheck.click = checkItem;
   // Item-Texto Lista
   const listItemText = document.createElement("p");
   listItemText.className = "list-item-text";
