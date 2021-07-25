@@ -4,7 +4,7 @@ const inputField = document.getElementById("inputTodo");
 const cleanAllBtn = document.getElementById("cleanAllBtn");
 const cleanDoneBtn = document.getElementById("cleanDoneBtn");
 // Um número para criar ids únicas
-let numOfListItemsCreated = 0;
+let randomNum = getRandomInt(1, 1000000);
 // Array para guardar itens da lista
 let itensLocalStorage = [];
 
@@ -19,6 +19,12 @@ const shouldHideElements = () => {
     cleanDoneBtn.className = "d-none";
   }
 };
+
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
+}
 
 const removeListItem = (id) => {
   const elementToDelete = document.getElementById(id);
@@ -42,9 +48,9 @@ const createListItem = (key, value, checked) => {
   // Parent List
   const listItem = document.createElement("div");
   listItem.className = "list-item";
-  numOfListItemsCreated++;
+  randomNum = getRandomInt(1, 1000000);
   // if key is empty, make one
-  listItem.id = key ? key : "list-item-" + numOfListItemsCreated;
+  listItem.id = key ? key : "list-item-" + randomNum;
   lista.appendChild(listItem);
 
   // create new list item object then push to array
@@ -62,13 +68,13 @@ const createListItem = (key, value, checked) => {
   listItem.appendChild(listItemCheck);
 
   // Check functionality
-  const checkItem = (e) => {
+  const checkItem = (checked) => {
     const indexItem = itensLocalStorage.findIndex(
       (item) => item.id === listItem.id
     );
-    if (e.target.checked) {
+    if (checked) {
       listItemText.style = "text-decoration: line-through";
-      listItem.style = "background-color: #606c38;";
+      listItem.style = "background-color: #6610f2;";
       listItemCheck.checked = true;
       itensLocalStorage[indexItem].checked = true;
     } else {
@@ -77,9 +83,13 @@ const createListItem = (key, value, checked) => {
       listItemCheck.checked = false;
       itensLocalStorage[indexItem].checked = false;
     }
+    console.log(itensLocalStorage[indexItem].checked);
   };
-  listItemCheck.addEventListener("click", checkItem);
+  listItemCheck.addEventListener("click", (e) => {
+    checkItem(e.target.checked);
+  });
   listItemCheck.click = checkItem;
+
   // Item-Texto Lista
   const listItemText = document.createElement("p");
   listItemText.className = "list-item-text";
@@ -99,6 +109,9 @@ const createListItem = (key, value, checked) => {
       shouldHideElements();
     }
   });
+
+  // Render Check
+  checkItem(checked);
 
   listItemText.after(listItemRemove);
 

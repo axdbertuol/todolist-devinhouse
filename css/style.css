@@ -13,10 +13,10 @@ html {
 
 body {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
-  color: #54483a;
+  color: whitesmoke;
   font-weight: 300;
   line-height: 1.6;
-  background-color: #e76f51;
+  background-color: #6610f2;
 }
 
 #inputTodo {
@@ -27,7 +27,7 @@ body {
 #submitButton {
   font-size: 1.5rem;
   border-radius: 15px;
-  background-color: olive;
+  /* background-color: olive; */
 }
 
 .cabecalho {
@@ -36,13 +36,14 @@ body {
 
 .mainContainer {
   width: 40vw;
+  min-height: 80vh;
   display: flex;
   flex-direction: column;
-  margin-top: 10rem;
+  margin-top: 4rem;
   margin-bottom: 1rem;
   padding: 3rem 2.5rem;
   border-radius: 15px;
-  background-color: #e9c46a;
+  background-color: #fd7e14;
   box-shadow: 0 1rem 4rem rgba(0, 0, 0, 0.6);
 }
 
@@ -60,13 +61,14 @@ body {
   display: flex;
   width: 100%;
   align-items: center;
-  background-color: #f4a261;
+  background-color: #6610f2;
   box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.2);
 }
 
 .list-item-text {
   font-size: 1.2rem;
   margin: 1rem;
+  color: black;
   overflow: hidden;
   font-weight: 400;
 }
