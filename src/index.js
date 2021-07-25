@@ -42,7 +42,7 @@ const createListItem = (key, value, checked) => {
 
   // show buttons and list
   lista.className = "list";
-  cleanAllBtn.className = "btn btn-dark";
+  cleanAllBtn.className = "btn btn-danger";
   cleanDoneBtn.className = "btn btn-dark";
 
   // Parent List
@@ -83,7 +83,7 @@ const createListItem = (key, value, checked) => {
       listItemCheck.checked = false;
       itensLocalStorage[indexItem].checked = false;
     }
-    console.log(itensLocalStorage[indexItem].checked);
+    saveToLocalStorage();
   };
   listItemCheck.addEventListener("click", (e) => {
     checkItem(e.target.checked);
@@ -107,6 +107,7 @@ const createListItem = (key, value, checked) => {
     if (shouldRemove) {
       removeListItem(e.target.parentElement.id);
       shouldHideElements();
+      saveToLocalStorage();
     }
   });
 
@@ -119,7 +120,7 @@ const createListItem = (key, value, checked) => {
 };
 
 const createListFromLocalStorage = () => {
-  if (localStorage.length > 0) {
+  if (localStorage.getItem("listaDeTarefas")) {
     const listOfItems = JSON.parse(localStorage.getItem("listaDeTarefas"));
     for (let index = 0; index < listOfItems.length; index++) {
       const id = listOfItems[index].id;
@@ -137,6 +138,8 @@ const onSubmit = () => {
   // clear inputField
   inputField.value = "";
   inputField.focus();
+
+  saveToLocalStorage();
 };
 
 const onClickCleanAll = () => {
@@ -150,6 +153,7 @@ const onClickCleanAll = () => {
       removeListItem(key);
     }
     shouldHideElements();
+    saveToLocalStorage();
   }
 };
 
@@ -169,10 +173,11 @@ const onClickCleanDone = () => {
       }
     }
     shouldHideElements();
+    saveToLocalStorage();
   }
 };
 
-// Add unload event
+// Save when unload event fires
 window.addEventListener("unload", saveToLocalStorage);
 window.unload = saveToLocalStorage;
 
